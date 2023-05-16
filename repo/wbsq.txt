@@ -1,0 +1,29 @@
+1.Realiza una copia de seguridad de todas las bases de datos que tienes en tu servidor. Borra todas las bases de datos. Restaura todas tus bases de datos con la copa de seguridad creada.
+mysqldump -u root -p --all-databases > C:/db.sql
+mysql -u root -p < C:/db.sql
+mysqldump -u root -p centroestudios > C:/db2.sql
+mysqldump -u root -p centroestudios profesor > C:/db1.sql
+
+2.Cree un fichero con registros de datos para tres nuevas asignaturas. Separe los campos por guiones y las filas por retorno de carro. Carga los datos del fichero creado en la tabla asignatura de la base de datos Centro de estudios.
+Crear un archivo txt con los campos separados por guiones en mysql uploads en program data.
+LOAD data infile 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\db.txt' into table profesor fields terminated by '-' lines terminated by '\n';
+SELECT * 
+FROM profesor;
+SHOW VARIABLES LIKE 'local_infile-´´-´-´--';
+SHOW VARIABLES LIKE 'secure_file_priv';
+SET global local_infile=1;
+
+3.Realiza una copia de seguridad en formato XML de la tabla profesor de la base de datos Centro de estudios. Elimina los datos de todos los profesores y recupérelos usando LOAD XML.
+mysqldump -u root -p --xml  centroestudios > C:/test.xml
+mysql -u root -p < C:/test.xml
+
+4.Aumenta la hora de las asignaturas del primer curso del ciclo formativo DAM en un 10%.
+select * from asignatura;
+UPDATE asignatura
+SET horas = horas * 1.1
+WHERE codigo IN ('DAM_AC', 'DAM_BBDD', 'DAM_DI', 'DAM_FOL', 'DAM_LM', 'DAM_PR', 'DAM_SI')
+AND curso = 1;
+
+5.Añada un atributo NumAsignaturas en la tabla profesor de la base de datos Centro de Estudios con valor por defecto 0.
+ALTER TABLE profesor
+ADD NumAsignaturas INT DEFAULT 0;
