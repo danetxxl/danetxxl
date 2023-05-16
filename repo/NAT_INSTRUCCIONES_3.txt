@@ -1,0 +1,21 @@
+HABILITAR REGLA EN CORTAFUEGOS DE WINDOWS
+
+ACTIVAR NAT
+	Editamos el archivo	/etc/ufw/before.rules
+	Añadimos al comienzo del archivo, justo después de los comentarios:
+	
+	# nat
+	*nat
+	:POSTROUTING ACCEPT [0:0]
+        -A POSTROUTING -o NOMBRE_TARJETA_EXTERNA -j MASQUERADE
+
+	COMMIT
+
+
+REINICIAMOS ufw
+
+sudo ufw disable && sudo ufw enable
+
+COMPROBAMOS NAT
+
+sudo iptables -t nat -L

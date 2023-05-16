@@ -1,0 +1,25 @@
+ROUTER:	ÚLTIMA DIRECCIÓN IP DE CADA RED
+W7 Y LM: PRIMERA DIRECCIÓN IP
+COMPROBAR CONECTIVIDAD
+
+INSTALAR ufw
+	sudo apt-get install ufw
+
+ACTIVAR ufw
+	sudo ufw enable
+
+COMPROBAR ESTADO DE ufw
+	sudo ufw status
+
+HABILITAR EL REENVÍO DE PAQUETES EN ufw
+	ESTO YA NO ES NECESARIO
+	/etc/default/ufw
+	cambiar DEFAULT_FORWARD_POLICY a ACCEPT
+	
+	/etc/ufw/sysctl.conf
+	eliminar comentarios de net/ipv4/ip_forward=1
+
+DESACTIVAR Y ACTIVAR ufw PARA APLICAR LOS CAMBIOS
+	sudo ufw disable && sudo ufw enable
+
+cat /proc/sys/net/ipv4/ip_forward = 1

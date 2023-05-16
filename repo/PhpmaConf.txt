@@ -1,0 +1,32 @@
+sudo apt update
+sudo apt upgrade
+sudo ufw enable
+sudo ufw allow 22
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw allow 3306
+sudo ufw reload
+sudo apt install apache2
+sudo apt install mysql-server
+sudo apt install phpmyadmin php-mbstring php-zip php-gd php-json php-curl
+sudo mysql
+UNINSTALL COMPONENT "file://component_validate_password";
+exit
+sudo apt install phpmyadmin
+sudo mysql
+INSTALL COMPONENT "file://component_validate_password";
+exit
+sudo phpenmod mbstring
+sudo systemctl restart apache2
+sudo mysql
+SELECT user,authentication_string,plugin,host FROM mysql.user;
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'P@ssw0rd';
+SELECT user,authentication_string,plugin,host FROM mysql.user;
+exit
+sudo mysql -u root -p 
+CREATE USER 'dba'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'P@ssw0rd';
+GRANT ALL PRIVILEGES ON *.* TO 'dba'@'localhost' WITH GRANT OPTION;
+exit
+sudo apt install libapache2-mod-php8.1
+sudo systemctl restart apache2
+https://your_domain_or_IP/phpmyadmin

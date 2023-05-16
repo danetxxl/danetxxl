@@ -1,0 +1,384 @@
+﻿comandos aso
+
+
+
+
+
+
+WINDOWS 
+POWERSHELL 
+  
+
+
+
+Nueva OU 
+New-ADOrganizationalUnit -Name “Alumnos” -Path “DC=Hugo, DC=LOCAL” 
+
+
+Nuevo User 
+
+
+New-ADUser Name “Ernesto” -Accountpassword (Read-Host -AsSecureString “ASO1234?”) -Path “OU=Alumnos, DC=HUGO, DC=LOCAL”
+
+
+Nuevo Grupo 
+New-ADGroup -Name”Aprobados” -SamAccountName APROBADOS -GroupCategory Security -GroupScope Global -DisplayName “APROBADOS Administrators”  -Path “OU=Alumnos,DC=HUGO,DC=LOCAL”
+
+
+
+
+user+grupo
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LINUX 
+
+
+
+
+
+
+RUTAS Y ARCHIVOS 
+
+
+etc/sudoers 
+  
+
+
+
+etc/passwd
+etc/shadow 
+
+
+
+
+
+
+etc/group
+etc/gshadow 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+usuarios y grupos linux 
+
+
+
+
+COMANDO USERADD 
+
+
+comando useradd
+useradd (nombreusuario)
+useradd (nombreusuario) -d (ruta donde se creará) 
+useradd user1
+useradd user3 -d /home/user_Basura 
+
+
+
+
+COMANDO GROUPADD
+
+
+comando groupadd 
+groupadd (nombre grupo)
+groupadd user_servicios 
+
+
+sudo adduser nombreUsuario nombreGrupo
+
+
+
+
+COMANDO USERMOD 
+
+
+
+
+asignar usuarios a otros grupos 
+usermod -aG (nombregrupo) (nombreususario)
+usermod -aG user_servicios user1
+
+
+cambiar nombre del usuario 
+usermod -l (nuevonombre) (nombreusuario)
+usermod -l user1_1 user1 
+
+
+
+
+modificar el nombre del grupo principal del usuario 
+usermod -g (nuevonombredelgrupo) (nombredelgrupo)
+usermod -g user3_1 user3 
+modificar el grupo principal 
+usermod -g (nuevogrupoprincipal) (grupoprincipal) 
+
+
+
+
+cambiar nombre de la carpeta usuario 
+usermod -d (ruta de la carpeta con el nuevo nombre) -m (nombre de la carpeta) 
+usermod -d /home/user2_pruebas -m user2
+
+
+modificar campo GECOS 
+chfn -w "555-789123" ort5
+
+
+
+
+COMANDO MKDIR 
+
+
+crear un árbol de directorios 
+mkdir -p /home/ortpruebas/erroneas /home/ortpruebas/correctas/enviar /home/ortpruebas/correctas/noenviar /home/ortpruebas/correctas/backup
+
+
+
+
+COMANDO TAR 
+crear backup y comprimir 
+tar -zcvf (nombre del archivo a generar) (ruta del archivo a realizar el backup) 
+tar -zcvf backup-0423.tar /home/ortpruebas/correctas/enviar
+mv backup-0423.tar /home/ortpruebas/correctas/noenviar
+
+
+
+
+OTROS 
+visualizar procesos 
+ps -u (usuario)
+ps
+ps -l 
+
+
+programar un apagado 
+shutdown -h 20:45 
+
+
+tree 
+sudo tree 
+
+
+comando sleep y bg 
+sleep 1500 
+bg 
+
+
+comando nice 
+nice -n 1 bash 
+
+
+
+
+
+
+
+
+
+
+SAMBA 
+
+
+
+
+1 install samba 
+2 editar etc/samba/smb.conf 
+Edítanos el conf y ponemos la red en interfaces y determinamos el enp0s3 
+Server role en standalone server 
+3
+Tenemos las 3 ventanas definidas 
+Printers 
+Público 
+Administración 
+
+
+4
+En el público determinamos el path en srv/samba/publico 
+En el administración el srv/samba/administración 
+Y en ambos determinamos el créate mask = 0700
+Directory mask = 0700
+writable = yes 
+read only= no 
+guest ok = yes 
+printable = no 
+5 creamos los directorios 
+Mkdir -p 
+
+
+6 creamos los usuarios públicos 
+
+
+Useradd sambuser 
+Smbpasswd -a sambuser 
+Pdbedit -L
+
+
+7 creamos los usuarios y grupos  de administración 
+Groupadd administracion 
+Groupadd jefes 
+Useradd adminuser
+Passwd adminuser
+Useradd jefeuser 
+Passwd jefeuser 
+Usermod -g administración adminuser 
+Usermod -g jefes jefeuser 
+
+
+8 damos permisos a la carpeta administracion 
+
+
+Chmod 775 srv/samba/administracion 
+Chown -hR root:administracion srv/samba/administracion 
+
+
+
+
+9 para revisar el archivo ejecutamos 
+
+
+Testparm smb.conf 
+
+
+10 reiniciamos 
+Systemctl restart smbd.service 
+
+
+11 abrimos el cliente nos vamos a red y ponemos \\ ip del servidor samba 
+
+
+
+
+
+
+ldap
+
+
+1 configurar ip estática 
+yamal 
+borramos el dhcp 
+ponemos addresses: [ip]
+netplan apply 
+# This is the network config written by 'subiquity'
+network:
+  renderer: networkd
+  ethernets:
+    enp0s3:
+      addresses:
+        - 192.168.1.247/24
+      nameservers:
+        addresses: [4.2.2.2, 8.8.8.8]
+      routes:
+        - to: default
+          via: 192.168.1.1
+  version: 2
+
+
+
+
+2 cambiar el nombre del host 
+sudo hostnamectl set-hostname ldapserver.hugo.local 
+
+
+y en etc/hosts ponemos la ip`nueva debajo y determinamos con ldapserver.hugo.local ldapserver 
+  
+
+
+
+3 instalamos ldap 
+sudo apt install slapd ldap-utils 
+1 contraseña admin 
+2 comando dpkg-reconfigure slapd
+1 no
+base de datos yes y yes 
+
+
+
+
+4 comprobamos instalación con comando 
+sudo slapcat
+
+
+5 creamos un archivo con el contenido de ldap 
+sudo slapcat > hugoldap.txt
+
+
+
+
+6 archivo ldif 
+sudo nano ou.ldif
+
+
+  
+
+sudo ldapadd -x -D cn=admin.dc=hugo,dc=local -W -f ou.ldif
+
+
+7 añadimos un grupo en el archivo ldif 
+  
+
+
+
+  
+
+
+
+8 usuario 
+sudo slappasswd 
+
+
+  
+
+sudo ldapadd -x -D cn=admin.dc=hugo,dc=local -W -f usr.ldif
+
+
+dn: uid=lucas, ou=alumnos, dc=hugo, dc=local
+objectClass: top
+objectClass: posixAccount
+objectClass: inetOrgPerson
+cn: grupo
+uid: lucas
+ou: alumnos
+uidNumber: 2000
+gidNumber: 10000
+homeDirectory: /home/lucas
+loginShell: /bin/bash
+userPassword: 
+sn: Ortega 
+mail: lucas@hugo.local
+giveName: lucas

@@ -1,0 +1,1 @@
+Path: %USERPROFILE%\AppData\Local\Microsoft\WindowsApps

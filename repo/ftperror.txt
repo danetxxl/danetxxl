@@ -1,0 +1,25 @@
+ftp> ls
+229 Entering Extended Passive Mode (|||51374|)
+
+ 
+
+要解决这种情况，ctrl+c 后输入 epsv4 off 回车即可。
+
+ 
+
+ftp> epsv4 off
+EPSV/EPRT on IPv4 off.
+ftp> ls
+227 Entering Passive Mode (9,44,51,77,147,2).
+150 Opening ASCII mode data connection for file list
+drwxr-xr-x   2 root     system        256 Jul 28 22:21 dev
+
+ 
+
+起初在网上搜说是 passvie mode 的问题，输入 passive 之后结果如下：
+
+
+ftp> passive
+Passive mode: off; fallback to active mode: off.
+ftp> ls
+200 EPRT command successful
