@@ -1,0 +1,80 @@
+PRACTICA 5.4 
+Linux
+#parte formato de cifrado md5
+#cramos un txt
+Sudo nano md5.txt
+#comandos
+Touch md5.txt
+Md5sun md5.txt
+#copiamos todo el texto que sale
+Md5sum md5.txt > (ponemos el texto).md5
+Md5sum -c (ponemos el texto).md5
+Nano md5.txt
+
+
+#Ahora editamos el archivo, y volvemos a realizar el comando md5sum -c sobre el archivo, y comprobamos que nos de error. Efectivamente nos da error
+Sudo nano md5.txt (lo editamos)
+Md5sum -c (ponemos el texto).md5
+#(nos tendría que dar error)
+
+
+#Windows
+#Descargamos y ejecutamos el archivo md5.exe
+#creamos un txt con texto dentro
+#Seleccionamos el archivo que queremos usar, y guardamos el hash que nos genera #Editamos el archivo original y lo guardamos 
+#Volvemos a seleccionar el archivo modificado, y en la ranura de abajo, ponemos el hash que guardamos del archivo original, y le damos a verificar, y como podemos ver, da error
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRACTICA 5.5
+	 
+#Realizamos la creación de claves rellenando los datos necesarios
+Gpg --gen-key
+#pide contraseña
+
+#Visualizamos el. fichero de configuración donde se almacenan las claves publicas 
+Gpg –list-keys
+
+#Visualizamos el fichero de configuración donde se almacenan las claves privadas
+Gpg –list-secret-keys
+
+	#creamos un txt 
+	Sudo nano original.txt 
+	
+#Encriptqamos de manera asimétrica un archivo
+Gpg -ar (correo) –encrypt texto original.txt
+
+#Comprobamos con cat el contenido del archivo que se ha cifrado
+Cat original.txt.asc
+
+	#Creamos otro txt
+	Sudo nano 1.txt
+	
+#Descifrar archivo cifrado
+Gpg -d original.txt.asc
+
+	#OTRA MANERA DE CIFRAR
+	Sudo nano cifraralvaro.txt
+
+#Ciframos de manera simétrica el archivo 
+Gpg -c cifraralvaro.txt
+
+#Comprobamos el archivo cifrado 
+Cat cifraralvaro.txt
+
+#Ejecutamos el comando de descifrado y comprobamos que se ha descifrado reenviándolo a otro archivo, donde se verá si se ha descifrado y aparece el mensaje correcto
+Gpg -d cifraralvaro.txt.gpg > descifrado.txt
+
+
+#Visualizamos el archivo donde se ha ejecutado el comando de descifrado y vemos que se ha descifrado
+Cat descifrado.txt
