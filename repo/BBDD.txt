@@ -1,0 +1,105 @@
+#TRABAJOS GESTORES DE BASE DE DATOS
+
+
+#Realiza una instalación de MySQL tal como se detalla en los apuntes y comprueba los cambios realizado en tu sistema.
+#El servidor MySql en la carpeta: “C:\Program Files\MySQL\MySQL\Server 8.0”.
+#Dentro de esta carpeta, en la subcarpeta bin tendremos todos los programas ejecutables del servidor
+
+#C:\ProgramData\MySQL\MySQL Server 8.0 se encuentra el ficherode configuración my.ini en el que podemos cambiar parámetros
+
+#para cambiar de puertos, dentro de la instalación antes de esto hay que hacer una copia de my.ini
+#cambiamos la configuración en el my.ini (shocket=(nombre de servicio1))
+
+#AÑADIR DOS SERVICIOS MYSQL para que se inicien automaticamente
+#duplicamos la carpeta MYSQL SERVER 8.0 en (C:\programData) y lo nombramos MYSQL SERVER 8.0.2
+#modificamos el archivo MY.INI de la carpeta duplicada y lo cambiamos de nombre a MY2.INI
+#MY2.INI cambiamos Client Section(socket=(nombre2servicio)) y Server Section(socket=(nombre2servicio))
+#una vez echo esto hacemos en el cmd dentro de Programfiles\mysql\mysql server 8.0\bin: 
+Mysqld –install MySQLserv2 –default-file=”C:\Program Data\MySQL\MySQL SERVER 8.0.2\my2.ini”
+#para iniciarlo comando: net start mysql(nombre2serv)
+#en el mysql añadimos nueva conexion de workbench
+
+#UD4-PRACTICA-ESCLAVO y MAESTRO
+#1. Archivos a meter dentro del my.ini debajo del [mysqld], id distinto al esclavo, para esto detenemos servicio mysql
+log-bin=mysql-bin #nombre del log binario 
+server-id=1  
+binlog-do-db=centroestudios 
+sync_binlog=1 
+#2. Iniciamos servicio mysql
+#3. Creamos el usuario esclavo con permisos de replicacion
+CREATE USER 'slave'@'ip_maquina_esclavo' IDENTIFIED BY '1234';
+GRANT REPLICATION SLAVE ON *.* TO 'slave'@'ip_maquina_esclavo';
+FLUSH PRIVILEGES;
+#4. En la maquina esclavo escribimos lo siguiente debajo de [mysqld], detenemos el servicio antes
+log-bin=mysql-bin
+server-id=2
+#iniciamos el servicio y entramos en mysql desde la consola 
+cd C:\Program Files\MySQL\MySQL Server 8.0\bin
+mysql -u root -p
+stop slave;
+#Entramos en el servidor master y ponemos lo siguiente
+SHOW MASTER STATUS
+#Abajo en el resultado nos acordamos de los numeros que hay al lado del bin.
+#En workbench del maestro ponemos:
+CHANGE MASTER TO MASTER_HOST='ip del host con el final cambiado',
+MASTER_USER='Ip del host',
+MASTER_PAS_SWORD='root',
+MASTER_LOG_FILE='mysql-bin.000058',
+MASTER_LOG_POS=1377
+#Damos permisos al esclavo para que puda acceder a la base de datos del maestro
+GRANT ALL PRIVILEGES ON *.* TO 'slave2'@'ip del esclavo'
+#por ultimo nos conectamos a la base de datos poniendo en el hostname la ip del slave
+
+
+#PRACTICA UD2
+
+#1. Recupera la contraseña de root
+#creamos un txt dentro de C:\\
+USE mysql;
+ALTER USER 'root@localhost' IDENTIFIED BY 'root';
+FLUSH PRIVILEGES;
+
+#nos metemos en servicios y paramos el servicio MySQL80
+#en el cmd dentro de C:\Program Files\MySQL\MySQL Server 8.0\bin ejecutamos
+mysql --defaults-file="C:\\Program Data\\MySQL\\MySQL SERVER 8.0\\my.ini" --init file=C:\\(nombre del txt)
+
+#2. Crear usuarios y asignar permisos en local
+
+#a. Creamos un usuario llamado nombreA@localhost con permisos de sólo conexión y comprueba que se puede conectar
+CREATE USER 'nombre'@'localhost' IDENTIFIED BY 'contraseña';
+#comprobamos entrando en una nueva conexion de workbench
+
+#b. Creamos un usuario llamado nombreB@localhost con permisos de sólo conexión y comprueba que se puede conectar dentro del usuario creado anteriormente
+CREATE USER 'nombre2'@'localhost' IDENTIFIED BY 'contraseña';
+#comprobamos entrando en una nueva conexion de workbench
+
+#c. otorgamos al 'nombre1' permisos de select sobre la tabla y lo comprobamos
+GRANT SELECT ON 'base de datos.tabla' TO 'nombre1'@'localhost';
+#nos metemos en la conexion del usuario1 y lo comprobamos
+SELECT * FROM 'base de datos.tabla'
+
+#d. otorga al usuario2 permisos de select, insert y update a las tablas  con GRANT
+GRANT GRANT OPTION, SELECT, INSERT, UPDATE ON (base de datos) 'usuario2'@'localhost';
+
+#e. conectate con el usuario2 y otorga permisos al usuario1 de seleccion en tabla
+GRANT SELECT 'tabla' TO 'usuario1'@'localhost';
+#dentro del usuario1
+SELECT *
+FROM 'tabla'
+
+#f. Quitale los permisos a usuario1 de seleccion sobre la tabla
+REVOKE SELECT ON tabla FROM 'usuario1'@'localhost';
+#dentro del usuario1
+SELECT *
+FROM 'tabla'
+
+#g. conectate con root y elimina todos los permisos a usuario1 y usuario2
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'usuario1'@'localhost';
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'usuario2'@'localhost';
+
+#h. otorga a usuario2 permisos de select en columnas
+GRANT SELECT (columna, columna) ON tabla TO 'usuario2'@'localhost';
+
+#i. conectate al usuario2 y ejecuta, debe dar error
+SELECT *
+FROM equipos;
