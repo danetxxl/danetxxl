@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Carpeta de destino para las copias de seguridad
+backup_dir="/ruta/de/backup"
+
+# Carpeta raíz del sistema
+root_dir="/"
+
+# Carpetas a respaldar
+folders=(
+    "/etc"
+    "/home"
+    "/var/www"
+    "/root"
+)
+
+# Nombre del archivo de respaldo
+backupfile="backup$(date +%Y%m%d_%H%M%S).tar.gz"
+
+# Crear la carpeta de respaldo si no existe
+mkdir -p "$backup_dir"
+
+# Crear el archivo de respaldo
+tar -czf "$backup_dir/$backup_file" ${folders[*]}
