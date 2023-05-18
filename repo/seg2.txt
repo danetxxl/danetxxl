@@ -1,0 +1,469 @@
+Comando de ayuda
+
+man comando
+
+comando --help o comando --h
+
+info comando
+
+
+
+Ver comandos por partes
+
+| more o less pero hay que cerrarlo con ctrl+z
+
+
+Cambiar de usuario en la terminal:
+sudo su nombre_de_usuario
+
+Adminisitracion usuarios
+
+
+USUARIOS
+
+adduser 
+
+Modifica el nombre del usuario user1 a user1_1:
+usermod -l user1_1 user1
+
+modificar o añadir contraseña:
+sudo passwd nombre_usuario
+	
+
+Modificar el directorio de inicio de un usuario, La opción -d (o también --home) nos permite cambiar el directorio de inicio y la opcion -m mueve el contenido del uusario a la nueva localizacion:
+usermod -d /home/user2_pruebas -m user2 
+
+Modifica algún valor del campo GECOS del usuario user2:
+usermod -c "Nuevo valor GECOS" user2
+
+
+Crea un usuario Administrador “ADMIN”. Haz login con este usuario.
+sudo adduser ADMIN.- El nombre no cumple con los requerimientos
+
+Use the ‘—force-badname’ opcion para relajar los requerimientos
+
+sudo adduser ADMIN –force-badname
+
+
+
+GRUPOS
+
+Crear un grupo
+sudo groupadd detectives
+
+Anadir un usuario a un grupo primario creado
+sudo usermod -a -G detectives mortadelo ; –a Agrega al usuario a los grupos complementarios solo se usa con la 							opción -G permite introducir varios grupos separados por comas
+
+
+Anadir un usuario a un grupo creado
+sudo usermod -G laabuela,agencia mortadelo ;-G permite introducir grupos adicionales separados por comas
+
+Modificamos el Nombre del grupo principal del usuario user3
+usermod -g user3_1 user3
+
+
+TAR
+
+tar -cvf sampleArchive.tar /home/sampleArchive
+Aquí /home/sampleArchive es el directorio que necesita ser comprimido creando sampleArchive.tar.
+
+Este comando usa las opciones –cvf que significan:
+
+c – crear un nuevo archivo .tar
+v – muestra una descripción detallada del progreso de la compresión
+f – nombre del archivo
+
+tar -xvf sampleArchive.tar
+
+
+
+CRONTAB
+
+Agregar tareas a Crontab
+
+nano consulta.sh
+
+El contenido del script sería el siguiente:
+
+#!/bin/bash
+
+Scripts
+
+
+Dar permisos de ejecución para poder ejecutarlo correctamente por parte de Cron:
+
+chmod ugo+x consulta.sh
+
+chmod con numeros
+
+-rw-rw-r--    1 newuser newuser     150 Mar 19 08:08 sneakers.txt
+Cada configuraci n del permiso puede estar representada por un valor numerico:
+
+r = 4 ;lectura
+
+w = 2 ;escritura
+
+x = 1 ;ejecucion
+
+- = 0 ;ninguno
+
+Si se suman estos valores, el resultado se utiliza para especificar los permisos.
+
+Para el fichero sneakers.txt, aqui tiene un ejemplo de los permisos codificados en numeros:
+
+ -  (rw-)   (rw-)  (r--)
+      |       |      |
+    4+2+0   4+2+0  4+0+0
+
+El total para los usuarios es seis, el total para los grupos es seis y el total para para los dem s es cuatro. El codigo de permisos sera 664.
+
+
+(todos los usuarios (group, other, user), tengan derechos de)= ugo+'permisos'
+
+Editar el fichero que posee las tareas. Para ello nos vamos a ayudar del comando crontab -e. 
+Minuto (0-59) Hora (0-23) Día del mes (1-31) Mes (1-12) Día de la semana (0-7, donde 0 y 7 representan domingo)
+Aquí tienes algunos ejemplos de cómo se pueden especificar las tareas programadas:
+
+* * * * * comando: Ejecuta el comando en cada minuto.
+0 * * * * comando: Ejecuta el comando una vez por hora, en el minuto 0 de cada hora.
+0 0 * * * comando: Ejecuta el comando una vez al día, a medianoche (00:00).
+0 0 * * 1 comando: Ejecuta el comando una vez a la semana, a medianoche (00:00) los lunes
+
+Si queremos ejecutar el script de consulta.sh todos los días a las 7 de la tarde, tendremos que indicar una línea en el crontab con lo siguiente:
+
+1º accedemos a con sudo nano /etc/crontab
+
+2º editamos el archivo y añadimos
+00 19 * * * usuario /ubicacion/del/script/consulta.sh
+
+
+CONFIGURACION HORARIA
+
+Para comprobar que tenemos la hora correcta en nuestro sistema operativo
+
+timedatectl
+
+
+Configurarla de forma correcta con la siguiente orden:
+
+timedatectl set-timezone Europe/Madrid
+
+
+
+PROCESOS EN SEGUNDO PLANO
+
+Ejecuta el comando sleep a 1500 s.
+
+sleep 1500
+
+Envialo a segundo plano.
+bg // sin mas si no tengo ningún otro proceso parado.
+
+Si hay mas procesos parados debo ejecutar el comando jobs y visualizar el id del proceso
+La ejecución del comando bg quedaría entonces: bg id_proceso
+
+Ejecuta el comando sleep a 3500 s.
+sleep 3500
+
+Podemos enviarlo a segundo plano directamente ejecutando: sleep 3500 &
+
+
+Visualiza los procesos en segundo plano.
+jobs
+
+Visualiza los procesos  incluyendo la ruta a la que pertenecen los programas a los que pertenecen
+ps
+
+Visualiza únicamente los procesos pertenecientes a bash.
+
+ps aux | grep bash
+
+Empeora la prioridad de alguno de ellos.
+
+Por ejemplo, si quieres empeorar la prioridad del proceso con ID 1234, puedes ejecutar el siguiente comando:
+
+sudo renice +10 1234 
+
+Ten en cuenta que necesitará privilegios de superusuario para cambiar la prioridad de un proceso.
+
+
+Muestra información en tiempo real sobre los procesos que se están ejecutando en el sistema
+
+top 
+
+Se refresca automáticamente cada tres segundos. Si queremos otra frecuencia de actualización, pulsamos la tecla d mientras se esté ejecutando. Indicamos la frecuencia de actualizacion en segundos y pulsamos la tecla Enter
+
+HASH 
+
+Generamos un archivo de texto plano ejemplo.txt
+
+sudo nano ejemplo.txt
+
+Ejecutamos 
+
+md5sum ejemplo.txt
+
+
+Verificamos el archivo automáticamente 
+
+md5sum ejemplo.txt > ejemplo.md5
+
+
+Verificamos la integridad del archivo
+
+md5sum -c ejemplo.md5
+
+
+Modificamos el archivo y lo volvemos a verificar
+
+md5sum -c ejemplo.md5
+
+
+CIFRADO SIMETRICO
+
+Generamos un archivo de texto plano ejemplo.txt
+
+sudo nano ejemplo.txt
+
+
+Encripta el archivo usando la herramienta gpg
+
+gpg -c ejemplo.txt
+
+
+Desencriptalo
+gpg -d ejemplo.txt.gpg > ejemplo2.txt
+
+
+CIFRADO ASIMETRICO
+
+Generamos las claves 
+
+gpg --gen-key
+
+Vemos las claves públicas y privadas
+gpg --list-keys
+
+Visualizamos la clave con toda la información de la clave
+gpg --list-secret-keys --keyid-format=long
+
+
+Exportamos la clave a un documento
+
+gpg --output ejemplo.txt --export ClaveID
+
+ClaveID ) es el número que aparece después de ejecutar
+gpg --list-secret-keys --keyid-format=long la clave es lo que va despues de "rsa3072/Clave ID"
+
+
+SAMBA
+
+
+Primero instalamos samba con sudo apt install samba
+
+
+Segundo instalamos el cliente con sudo apt install smbclient
+
+CONFIGURAR SAMBA
+Abrimos el archivo de configuración de samba con sudo nano /etc/samba/smb.conf
+
+[publico]
+
+comment = publico
+path = /srv/samba/publico
+browseable = yes
+printable = no
+guest ok   = yes
+read only  = no
+create mask = 0700
+directory mask = 0771
+writeable = yes
+write list = @root
+
+[administracion]
+ 
+comment = solo para grupo administracion
+path = /srv/samba/administracion
+browseable = yes
+read only  = yes
+guest ok   = no
+write list = @administracion
+valid users = @administracion, @jefes
+
+
+Creamos en la máquina los directorios donde se montarán los recursos compartidos Samba
+mkdir /srv/samba
+mkdir /srv/samba/administracion
+mkdir /srv/samba/publico
+
+Comprobamos con testparm el archivo de configuración
+Reinciamos el server sudo systemctl restart smbd.conf
+
+Configuramos las interfaces del equipo con las que trabajará el Servidor Samba dentro del archivo smb.conf
+Con la ip de nuestro server y en nombre de la interfaz
+
+Crear usuario local en la máquina Linux:
+useradd sambauser
+
+Crear usuario como usuario de samba,con el comando smbpasswd.
+smbpasswd es un comando de Linux que permite configurar la contraseña o password de un usuario Samba.
+smbpasswd -a sambauser
+
+listar todos los usuarios habilitados para acceder como clientes Samba, con el comando:
+pdbedit -L
+
+Creamos el grupo administración y el grupo jefes:
+
+groupadd administracion
+groupadd jefes
+
+Añadimos un usuario a cada uno de los grupos para hacer luego las pruebas (creamos el usuario en la máquina y después su password):
+
+useradd administracionuser
+passwd administracionuser
+ 
+useradd jefeuser
+passwd jefeuser
+
+Añadimos el usuario administracionuser al grupo administracion
+y el usuario jefeuser al grupo jefes
+
+usermod -g administracion administracionuser
+usermod -g jefe jefeuser
+
+crear esos usuarios locales como usuarios en SAMBA:
+smbpasswd -a administracionuse
+
+sobre el directorio administracion, en el cual queremos aplicar una configuración de lectura y escritura basada en grupos (solo podrá escribir el grupo administracion), ejecutamos:
+
+chmod 775 /srv/samba/administracion
+
+Y cambiamos el usuario y grupo propietarios al grupo que puede escribir:
+
+chown -hR root:administracion srv/samba/administracion
+
+
+Máscara de creación de archivos: Establece los permisos que se otorgarán a los archivos que se creen.
+create mask = 0700
+
+
+Máscara de creación de carpetas: Establece los permisos que se otorgarán a los directorios que se creen.
+directory mask = 0700
+
+testparm smb.conf
+
+sudo systemctl restart smbd.service ó /etc/init.d/smbd restart
+
+
+
+Acceder a samba
+
+Linux
+Accedemos por smb con cualquiera de las siguientes opciones:
+/IP
+//usuario@IP
+usuario@IP/nombre_recurso
+
+
+Windows
+Desde equipos Windows. Por medio de Ejecutar   \\IP del servidor
+
+
+Acceder por terminal, con protocolo SMB:
+Entrando por consola, con smbclient, a un recurso compartido de un servidor Samba, con un usuario 
+
+Samba concreto, con opción -U  :
+smbclient -U usuario //IP/recurso
+smbclient -U administracionuser //192.168.0.202/administracion
+
+
+LDAP
+
+Instalar las actualizaciones del sistema
+sudo apt update -y && sudo apt upgrade -y && sudo apt dist-upgrade -y
+
+Instalar las caracteristicas necesarias
+sudo apt install slapd ldap-utils -y
+
+Realizar la configuración básica
+Una vez concluida la instalación, debemos realizar la configuración manual. Con el comando:
+sudo dpkg-reconfigure slapd
+
+Lo primero que nos pregunta el asistente es si queremos omitir la configuración de OpenLDAP NO.
+
+Después, deberemos escribir el nombre DNS del dominio que usaremos en nuestro directorio LDAP. En mi
+ejemplo, usaré el siguiente:
+nombreDominio.local
+
+
+A continuación, deberemos escribir el nombre de la empresa o entdad en la que estemos realizando la
+instalación.
+nombreDominio
+
+Seguidamente, el asistente nos pregunta si queremos eliminar la base de datos de configuración antigua YES
+
+Comprobar la instalación
+Una vez concluida la instalación, podemos comprobar que todo es correcto usando el comando slapcat:
+
+sudo slapcat
+
+
+
+Configuración fichero LDIF
+
+1º Generamos la contraseña del usuario slappasswd:
+sudo slappasswd
+A continuación, el comando nos pide la contraseña que queremos utilizar. La que usará inicialmente el usuario Deberemos copiarla, para evitar errores tipográficos.
+
+Creamos el archivo para ldif sudo nano usr.ldif
+
+organidad organizativa
+
+dn: ou=unidad,dc=nombreDominio,dc=local
+objectClass: top
+objectClass: organizationalUnit
+ou: unidad (ESTE NOMBRE LO DECIDIS VOSOTROS, PERO QUE SEA SIGNIFICATIVO)
+
+
+
+grupo:
+
+dn: cn=grupo,ou=unidad,dc=nombreDominio,dc=local
+objectClass: top
+objectClass: posixGroup
+gidNumber: 10000
+cn: grupo (ESTE NOMBRE LO DECIDIS VOSOTROS, PERO QUE SEA SIGNIFICATIVO)
+UID de los grupos a partir del valor 10000 (gidNumber: 10000). Así, los siguientes grupos que creemos de forma manual, recibirán los valores 10001, 10002, etc
+
+
+
+usuario:
+
+dn: uid=ainhoa,ou=unidad,dc=nombreDominio,dc=local
+objectClass: top
+objectClass: posixAccount
+objectClass: inetOrgPerson
+objectClass: person (ESTE NOMBRE LO DECIDIS VOSOTROS, PERO QUE SEA SIGNIFICATIVO)
+cn: Ainhoa (ESTE NOMBRE LO DECIDIS VOSOTROS, PERO QUE SEA SIGNIFICATIVO)
+uid: Ainhoa (ESTE NOMBRE LO DECIDIS VOSOTROS, PERO QUE SEA SIGNIFICATIVO)
+ou: grupo (ESTE NOMBRE LO DECIDIS VOSOTROS, PERO QUE SEA SIGNIFICATIVO)
+uidNumber: 2000
+gidNumber: 10000
+homeDirectory: /home/ainhoa
+loginShell: /bin/bash
+userPassword: {SSHA}TWWnxuBaXt1Hx9ohEXqOJPqXZAgm9lwc (HASH DE LA PASSWORD OBTENIDO)
+sn: Serna
+mail: ainhoa.serna@nombreDominio.com
+givenName: ainhoa
+Observa que hemos incluido al usuario como miembro del grupo que hemos creado más arriba (gidNumber: 10000) y hemos usado la contraseña que hemos generado antes (userPassword: {SSHA}TWWnxuBaXt1Hx9ohEXqOJPqXZAgm9lwc
+
+Comprobamos el arhivo
+sudo slapcat
+
+Cargamos el archivo ldif
+
+sudo ldapadd -x -D cn=admin,dc=nombreDominio,dc=local -W -f usr.ldif
+
+Y nos saldra fallo porque no esta instalado el rol dns que es necesario para tener un dominio y veterlo en la configuracion inical
+
+
